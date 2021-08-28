@@ -19,7 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, CadastroURI.PUBLIC_HTTP_PSOT_REQUESTS).permitAll()
+                .antMatchers(HttpMethod.POST, CadastroURI.PUBLIC_HTTP_POST_REQUESTS).permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

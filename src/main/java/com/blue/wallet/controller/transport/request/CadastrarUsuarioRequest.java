@@ -2,7 +2,6 @@ package com.blue.wallet.controller.transport.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -16,14 +15,14 @@ public class CadastrarUsuarioRequest implements Serializable {
     @Email(message = "O campo 'email' está inválido")
     private String email;
 
-    @NotBlank(message = "O campo 'celular' não pode ser nulo ou branco.")
     private String celular;
 
-    @NotNull(message = "O campo 'dataNascimento' não pode ser nulo ou branco.")
     private LocalDate dataNascimento;
 
     @NotBlank(message = "O campo 'senha' não pode ser nulo ou branco.")
     private String senha;
+
+    private String googleCode;
 
     public String getNome() {
         return nome;
@@ -63,5 +62,13 @@ public class CadastrarUsuarioRequest implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getGoogleCode() {
+        return googleCode;
+    }
+
+    public void setGoogleCode(String googleCode) {
+        this.googleCode = googleCode;
     }
 }

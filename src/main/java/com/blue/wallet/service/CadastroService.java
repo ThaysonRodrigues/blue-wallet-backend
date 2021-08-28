@@ -1,6 +1,7 @@
 package com.blue.wallet.service;
 
 import com.blue.wallet.controller.transport.request.CadastrarUsuarioRequest;
+import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.domain.UsuarioORM;
 import com.blue.wallet.exceptions.ValidationBusinessException;
 import com.blue.wallet.repository.UsuarioRepository;
@@ -21,10 +22,20 @@ public class CadastroService {
         Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
 
         if(usuario.isPresent()) {
-            throw new ValidationBusinessException("Usuário já cadastrado no sistema!");
+            throw new ValidationBusinessException("Email já cadastrado no sistema!");
         }
 
         createUsuario(request);
+    }
+
+    public boolean existeContaCadastrada(VerificarContaRequest request) {
+        Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
+
+        if(usuario.isPresent()) {
+            return true;
+        }
+
+        return false;
     }
 
     private void createUsuario(CadastrarUsuarioRequest request) {
@@ -36,6 +47,7 @@ public class CadastroService {
         usuario.setDataNascimento(request.getDataNascimento());
         usuario.setDataCadastro(LocalDate.now());
         usuario.setSenha(new BCryptPasswordEncoder().encode(request.getSenha()));
+        usuario.setGoogleCode(request.getGoogleCode());
 
         repository.save(usuario);
     }

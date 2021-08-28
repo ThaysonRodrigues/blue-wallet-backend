@@ -2,6 +2,7 @@ package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.helper.ResponseBodyHelper;
 import com.blue.wallet.controller.transport.request.CadastrarUsuarioRequest;
+import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.exceptions.ValidationBusinessException;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://localhost:4200")
 @RequestMapping(value = CadastroURI.CONTROLLER)
 public class CadastroController {
 
@@ -24,7 +25,6 @@ public class CadastroController {
 
     @PostMapping(value = CadastroURI.CADASTAR)
     public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastrarUsuarioRequest request, BindingResult result) {
-
         Response response = new Response();
 
         if(result.hasErrors()) {
@@ -42,5 +42,29 @@ public class CadastroController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = CadastroURI.VERIFICAR)
+    public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaRequest request, BindingResult result) {
+        Response response = new Response();
+        boolean existeCadastro;
+
+        if(result.hasErrors()) {
+            result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        try {
+            existeCadastro = service.existeContaCadastrada(request);
+        }  catch (Exception e) {
+            return ResponseBodyHelper.internalServerError(e.getMessage());
+        }
+
+        if(existeCadastro) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
