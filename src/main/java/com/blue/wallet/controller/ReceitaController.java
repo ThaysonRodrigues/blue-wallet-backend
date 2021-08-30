@@ -1,7 +1,6 @@
 package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.transport.request.CadastrarUsuarioRequest;
-import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.controller.uri.ReceitaURI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
