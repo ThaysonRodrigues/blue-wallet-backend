@@ -1,7 +1,7 @@
 package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.helper.ResponseBodyHelper;
-import com.blue.wallet.controller.transport.request.CadastrarUsuarioRequest;
+import com.blue.wallet.controller.transport.request.CadastroUsuarioRequest;
 import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.CadastroURI;
@@ -24,7 +24,7 @@ public class CadastroController {
     private CadastroService service;
 
     @PostMapping(value = CadastroURI.CADASTAR)
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastrarUsuarioRequest request, BindingResult result) {
+    public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest request, BindingResult result) {
         Response response = new Response();
 
         if(result.hasErrors()) {

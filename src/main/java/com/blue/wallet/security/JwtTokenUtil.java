@@ -28,6 +28,10 @@ public class JwtTokenUtil implements Serializable {
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 
+	public String getIdUsuariofromToken(String token) {
+		return getClaimFromToken(token, Claims::getId);
+	}
+
 	public Date getIssuedAtDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getIssuedAt);
 	}
@@ -92,5 +96,9 @@ public class JwtTokenUtil implements Serializable {
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+	}
+
+	public String cleanToken(String token) {
+		return token.replace("Bearer ", "");
 	}
 }

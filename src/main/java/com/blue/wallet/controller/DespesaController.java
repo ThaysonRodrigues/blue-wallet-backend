@@ -1,14 +1,13 @@
 package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.helper.ResponseBodyHelper;
-import com.blue.wallet.controller.transport.request.CadastroReceitaDTO;
+import com.blue.wallet.controller.transport.request.CadastroDespesaDTO;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.DespesaURI;
-import com.blue.wallet.controller.uri.ReceitaURI;
-import com.blue.wallet.domain.LancamentoReceitaORM;
-import com.blue.wallet.mapper.ReceitaMapper;
+import com.blue.wallet.domain.LancamentoDespesaORM;
+import com.blue.wallet.mapper.DespesaMapper;
 import com.blue.wallet.security.JwtTokenUtil;
-import com.blue.wallet.service.ReceitaService;
+import com.blue.wallet.service.DespesaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +17,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = ReceitaURI.CONTROLLER)
-public class ReceitaController {
+@RequestMapping(value = DespesaURI.CONTROLLER)
+public class DespesaController {
 
     @Autowired
     private JwtTokenUtil tokenUtil;
 
     @Autowired
-    private ReceitaService receitaService;
+    private DespesaService despesaService;
 
     @Autowired
-    private ReceitaMapper mapper;
+    private DespesaMapper mapper;
 
-    @PostMapping(value = ReceitaURI.CADASTAR)
-    public ResponseEntity<?> lancarReceita(@Valid @RequestBody CadastroReceitaDTO request,
+    @PostMapping(value = DespesaURI.CADASTAR)
+    public ResponseEntity<?> lancarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
 
-        CadastroReceitaDTO receitaResponse = null;
+        CadastroDespesaDTO despesaResponse = null;
 
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
@@ -48,49 +47,48 @@ public class ReceitaController {
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoReceitaORM receitaORM = receitaService.save(mapper.toLancamentoReceitaORM(request, idUsuario));
+            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
 
-            receitaResponse = mapper.toCadastroReceitaDTO(receitaORM);
-
+            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.CREATED).body(receitaResponse);
+        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
     }
 
-    @PutMapping(value = ReceitaURI.EDITAR)
-    public ResponseEntity<?> editarReceita(@Valid @RequestBody CadastroReceitaDTO request,
+    @PutMapping(value = DespesaURI.EDITAR)
+    public ResponseEntity<?> editarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
 
-        CadastroReceitaDTO receitaResponse = null;
+        CadastroDespesaDTO despesaResponse = null;
 
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        
+
         try {
             String strToken = tokenUtil.cleanToken(token);
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoReceitaORM receitaORM = receitaService.save(mapper.toLancamentoReceitaORM(request, idUsuario));
+            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
 
-            receitaResponse = mapper.toCadastroReceitaDTO(receitaORM);
+            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(receitaResponse);
+        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
     }
 
-    @DeleteMapping(value = ReceitaURI.DELETAR)
-    public ResponseEntity<?> deletarReceita(@PathVariable Integer receitaId) {
+    @DeleteMapping(value = DespesaURI.DELETAR)
+    public ResponseEntity<?> deletarDespesa(@PathVariable Integer despesaId) {
         try {
-            receitaService.deletarReceitaById(receitaId);
+            despesaService.deletarDespesaById(despesaId);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }

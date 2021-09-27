@@ -46,6 +46,12 @@ public class UsuarioORM {
      ** CONSTRUCTORS
      *************************************************/
 
+    public UsuarioORM() {}
+
+    public UsuarioORM(Integer id) {
+        this.id = id;
+    }
+
     /*************************************************
      ** AUXILIAR METHODS
      *************************************************/

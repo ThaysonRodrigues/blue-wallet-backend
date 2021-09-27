@@ -1,6 +1,6 @@
 package com.blue.wallet.service;
 
-import com.blue.wallet.controller.transport.request.CadastrarUsuarioRequest;
+import com.blue.wallet.controller.transport.request.CadastroUsuarioRequest;
 import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.domain.UsuarioORM;
 import com.blue.wallet.exceptions.ValidationBusinessException;
@@ -18,7 +18,7 @@ public class CadastroService {
     @Autowired
     private UsuarioRepository repository;
 
-    public void gravarNovaConta(CadastrarUsuarioRequest request) throws ValidationBusinessException {
+    public void gravarNovaConta(CadastroUsuarioRequest request) throws ValidationBusinessException {
         Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
 
         if(usuario.isPresent()) {
@@ -38,7 +38,7 @@ public class CadastroService {
         return false;
     }
 
-    private void createUsuario(CadastrarUsuarioRequest request) {
+    private void createUsuario(CadastroUsuarioRequest request) {
         UsuarioORM usuario = new UsuarioORM();
 
         usuario.setNome(request.getNome());
