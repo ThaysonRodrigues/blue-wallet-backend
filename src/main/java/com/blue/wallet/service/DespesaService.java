@@ -5,6 +5,8 @@ import com.blue.wallet.repository.LancamentoDespesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DespesaService {
 
@@ -17,5 +19,9 @@ public class DespesaService {
 
     public void deletarDespesaById(Integer despesaId) {
         repository.deleteById(despesaId);
+    }
+
+    public List<LancamentoDespesaORM> pesquisarLancamentoPorDataAndUsuario(Integer idUsuario, String data) {
+        return repository.findLancamentoPorData(idUsuario, data);
     }
 }

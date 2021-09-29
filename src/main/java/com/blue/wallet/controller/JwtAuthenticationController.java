@@ -5,6 +5,7 @@ import com.blue.wallet.security.JwtTokenUtil;
 import com.blue.wallet.security.dto.JwtRequest;
 import com.blue.wallet.security.dto.JwtResponse;
 import com.blue.wallet.service.JwtUserDetailsService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ public class JwtAuthenticationController {
 	private JwtUserDetailsService userDetailsService;
 
 	@PostMapping
+	@ApiOperation(value = "EndPoint para autenticar usuário")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		authenticate(authenticationRequest.getEmail(), authenticationRequest.getSenha());

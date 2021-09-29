@@ -7,6 +7,7 @@ import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.exceptions.ValidationBusinessException;
 import com.blue.wallet.service.CadastroService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class CadastroController {
     private CadastroService service;
 
     @PostMapping(value = CadastroURI.CADASTAR)
+    @ApiOperation(value = "EndPoint para cadastrar um novo usuário")
     public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest request, BindingResult result) {
         Response response = new Response();
 
@@ -45,6 +47,7 @@ public class CadastroController {
     }
 
     @PostMapping(value = CadastroURI.VERIFICAR)
+    @ApiOperation(value = "EndPoint para verificar se email já está cadastrado")
     public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaRequest request, BindingResult result) {
         Response response = new Response();
         boolean existeCadastro;

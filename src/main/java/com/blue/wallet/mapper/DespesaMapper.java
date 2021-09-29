@@ -1,8 +1,12 @@
 package com.blue.wallet.mapper;
 
 import com.blue.wallet.controller.transport.request.CadastroDespesaDTO;
+import com.blue.wallet.controller.transport.request.CadastroReceitaDTO;
 import com.blue.wallet.domain.*;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DespesaMapper {
@@ -34,5 +38,25 @@ public class DespesaMapper {
         despesa.setFlgPagamentoEfetuado(lancamentoDespesa.isFlgPagamentoEfetuado());
 
         return despesa;
+    }
+
+    public List<CadastroDespesaDTO> toListCadastroDespesaDTO(List<LancamentoDespesaORM> lancamentoPorData) {
+        List<CadastroDespesaDTO> despesas = new ArrayList<>();
+
+        for (LancamentoDespesaORM lancamento: lancamentoPorData) {
+            CadastroDespesaDTO despesaDTO = new CadastroDespesaDTO();
+
+            despesaDTO.setIdDespesa(lancamento.getId());
+            despesaDTO.setCategoriaDespesa(lancamento.getCategoriaDespesa().getId());
+            despesaDTO.setDescricao(lancamento.getDescricao());
+            despesaDTO.setNumeroParcelas(lancamento.getNumeroParcelas());
+            despesaDTO.setDataPagamento(lancamento.getDataPagamento());
+            despesaDTO.setValor(lancamento.getValor());
+            despesaDTO.setFlgPagamentoEfetuado(lancamento.isFlgPagamentoEfetuado());
+
+            despesas.add(despesaDTO);
+        }
+
+        return despesas;
     }
 }

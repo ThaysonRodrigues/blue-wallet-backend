@@ -6,6 +6,9 @@ import com.blue.wallet.domain.LancamentoReceitaORM;
 import com.blue.wallet.domain.UsuarioORM;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ReceitaMapper {
 
@@ -36,5 +39,26 @@ public class ReceitaMapper {
         cadastroReceita.setCategoriaReceita(receitaORM.getCategoriaReceita().getId());
 
         return cadastroReceita;
+    }
+
+    public List<CadastroReceitaDTO> toListCadastroReceitaDTO(List<LancamentoReceitaORM> lancamentoPorData) {
+
+        List<CadastroReceitaDTO> receitas = new ArrayList<>();
+
+        for (LancamentoReceitaORM lancamento: lancamentoPorData) {
+            CadastroReceitaDTO receitaDTO = new CadastroReceitaDTO();
+
+            receitaDTO.setIdReceita(lancamento.getId());
+            receitaDTO.setCategoriaReceita(lancamento.getCategoriaReceita().getId());
+            receitaDTO.setDescricao(lancamento.getDescricao());
+            receitaDTO.setNumeroParcelas(lancamento.getNumeroParcelas());
+            receitaDTO.setDataLancamento(lancamento.getDataLancamento());
+            receitaDTO.setValor(lancamento.getValor());
+            receitaDTO.setFlgPagamentoEfetuado(lancamento.isFlgPagamentoEfetuado());
+
+            receitas.add(receitaDTO);
+        }
+
+        return receitas;
     }
 }
