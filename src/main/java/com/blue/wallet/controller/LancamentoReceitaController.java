@@ -1,16 +1,14 @@
 package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.helper.ResponseBodyHelper;
-import com.blue.wallet.controller.transport.request.CadastroDespesaDTO;
 import com.blue.wallet.controller.transport.request.CadastroReceitaDTO;
 import com.blue.wallet.controller.transport.response.Response;
-import com.blue.wallet.controller.uri.DespesaURI;
-import com.blue.wallet.controller.uri.ReceitaURI;
-import com.blue.wallet.domain.LancamentoDespesaORM;
+import com.blue.wallet.controller.uri.LancamentoReceitaURI;
 import com.blue.wallet.domain.LancamentoReceitaORM;
-import com.blue.wallet.mapper.DespesaMapper;
+import com.blue.wallet.mapper.ReceitaMapper;
+import com.blue.wallet.repository.LancamentoReceitaRepository;
 import com.blue.wallet.security.JwtTokenUtil;
-import com.blue.wallet.service.DespesaService;
+import com.blue.wallet.service.ReceitaService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,25 +20,28 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = DespesaURI.CONTROLLER)
-public class DespesaController {
+@RequestMapping(value = LancamentoReceitaURI.CONTROLLER)
+public class LancamentoReceitaController {
 
     @Autowired
     private JwtTokenUtil tokenUtil;
 
     @Autowired
-    private DespesaService despesaService;
+    private ReceitaService receitaService;
 
     @Autowired
-    private DespesaMapper mapper;
+    private ReceitaMapper mapper;
 
-    @PostMapping(value = DespesaURI.CADASTAR)
-    @ApiOperation(value = "EndPoint para cadastrar uma nova despesa")
-    public ResponseEntity<?> lancarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
+    @Autowired
+    private LancamentoReceitaRepository repository;
+
+    @PostMapping(value = LancamentoReceitaURI.CADASTAR)
+    @ApiOperation(value = "EndPoint para cadastrar uma nova receita")
+    public ResponseEntity<?> lancarReceita(@Valid @RequestBody CadastroReceitaDTO request,
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
 
-        CadastroDespesaDTO despesaResponse = null;
+        CadastroReceitaDTO receitaResponse = null;
 
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
@@ -53,50 +54,51 @@ public class DespesaController {
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
+            LancamentoReceitaORM receitaORM = receitaService.save(mapper.toLancamentoReceitaORM(request, idUsuario));
 
-            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
+            receitaResponse = mapper.toCadastroReceitaDTO(receitaORM);
+
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(receitaResponse);
     }
 
-    @PutMapping(value = DespesaURI.EDITAR)
-    @ApiOperation(value = "EndPoint para editar uma despesa cadastrada")
-    public ResponseEntity<?> editarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
+    @PutMapping(value = LancamentoReceitaURI.EDITAR)
+    @ApiOperation(value = "EndPoint para editar uma receita cadastrada")
+    public ResponseEntity<?> editarReceita(@Valid @RequestBody CadastroReceitaDTO request,
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
 
-        CadastroDespesaDTO despesaResponse = null;
+        CadastroReceitaDTO receitaResponse = null;
 
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
+        
         try {
             String strToken = tokenUtil.cleanToken(token);
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
+            LancamentoReceitaORM receitaORM = receitaService.save(mapper.toLancamentoReceitaORM(request, idUsuario));
 
-            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
+            receitaResponse = mapper.toCadastroReceitaDTO(receitaORM);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
+        return  ResponseEntity.status(HttpStatus.OK).body(receitaResponse);
     }
 
-    @DeleteMapping(value = DespesaURI.DELETAR)
-    @ApiOperation(value = "EndPoint para deletar uma despesa")
-    public ResponseEntity<?> deletarDespesa(@PathVariable Integer despesaId) {
+    @DeleteMapping(value = LancamentoReceitaURI.DELETAR)
+    @ApiOperation(value = "EndPoint para deletar uma receita")
+    public ResponseEntity<?> deletarReceita(@PathVariable Integer receitaId) {
         try {
-            despesaService.deletarDespesaById(despesaId);
+            receitaService.deletarReceitaById(receitaId);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
@@ -104,23 +106,23 @@ public class DespesaController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = ReceitaURI.PESQUISAR_POR_DATA)
-    @ApiOperation(value = "EndPoint para pesquisar despesas por data e usuário")
+    @GetMapping(value = LancamentoReceitaURI.PESQUISAR_POR_DATA)
+    @ApiOperation(value = "EndPoint para pesquisar receitas por data e usuário")
     public ResponseEntity<?> pesquisarLancamentoReceitaPorData(@RequestHeader("Authorization") String token,
                                                                @PathVariable String data) {
         String strToken = tokenUtil.cleanToken(token);
 
         String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-        List<LancamentoDespesaORM> lancamentoPorData = despesaService.pesquisarLancamentoPorDataAndUsuario(Integer
+        List<LancamentoReceitaORM> lancamentoPorData = receitaService.pesquisarLancamentoPorDataAndUsuario(Integer
                 .parseInt(idUsuario), data);
 
-        List<CadastroDespesaDTO> despesasDTO = mapper.toListCadastroDespesaDTO(lancamentoPorData);
+        List<CadastroReceitaDTO> receitasDTO = mapper.toListCadastroReceitaDTO(lancamentoPorData);
 
-        if(despesasDTO.isEmpty()) {
+        if(receitasDTO.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(despesasDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(receitasDTO);
     }
 }

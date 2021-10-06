@@ -1,6 +1,6 @@
 package com.blue.wallet.controller.uri;
 
-public final class ReceitaURI {
+public final class LancamentoReceitaURI {
 
     public static final String CONTROLLER = "/api/receita";
 

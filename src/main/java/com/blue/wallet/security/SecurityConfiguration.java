@@ -2,7 +2,6 @@ package com.blue.wallet.security;
 
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.controller.uri.JwtAuthenticationURI;
-import com.blue.wallet.controller.uri.ReceitaURI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

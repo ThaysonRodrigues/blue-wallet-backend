@@ -1,6 +1,6 @@
 package com.blue.wallet.controller.uri;
 
-public final class DespesaURI {
+public final class LancamentoDespesaURI {
 
     public static final String CONTROLLER = "/api/despesa";
 
