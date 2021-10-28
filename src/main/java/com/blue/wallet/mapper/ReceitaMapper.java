@@ -55,6 +55,7 @@ public class ReceitaMapper {
             receitaDTO.setDataLancamento(lancamento.getDataLancamento());
             receitaDTO.setValor(lancamento.getValor());
             receitaDTO.setFlgPagamentoEfetuado(lancamento.isFlgPagamentoEfetuado());
+            receitaDTO.setDescricaoCategoriaReceita(lancamento.getCategoriaReceita().getDescricao());
 
             receitas.add(receitaDTO);
         }

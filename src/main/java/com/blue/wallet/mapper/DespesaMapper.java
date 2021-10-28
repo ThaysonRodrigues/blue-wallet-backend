@@ -53,6 +53,7 @@ public class DespesaMapper {
             despesaDTO.setDataPagamento(lancamento.getDataPagamento());
             despesaDTO.setValor(lancamento.getValor());
             despesaDTO.setFlgPagamentoEfetuado(lancamento.isFlgPagamentoEfetuado());
+            despesaDTO.setDescricaoCategoriaDespesa(lancamento.getCategoriaDespesa().getDescricao());
 
             despesas.add(despesaDTO);
         }

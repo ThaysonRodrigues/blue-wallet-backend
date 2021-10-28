@@ -19,6 +19,8 @@ public class CadastroReceitaDTO implements Serializable {
     @NotNull(message = "O campo 'categoriaReceita' não pode ser nulo ou branco.")
     private Integer categoriaReceita;
 
+    private String descricaoCategoriaReceita;
+
     @NotBlank(message = "O campo 'descricao' não pode ser nulo ou branco.")
     private String descricao;
 
@@ -48,6 +50,14 @@ public class CadastroReceitaDTO implements Serializable {
 
     public void setCategoriaReceita(Integer categoriaReceita) {
         this.categoriaReceita = categoriaReceita;
+    }
+
+    public String getDescricaoCategoriaReceita() {
+        return descricaoCategoriaReceita;
+    }
+
+    public void setDescricaoCategoriaReceita(String descricaoCategoriaReceita) {
+        this.descricaoCategoriaReceita = descricaoCategoriaReceita;
     }
 
     public String getDescricao() {

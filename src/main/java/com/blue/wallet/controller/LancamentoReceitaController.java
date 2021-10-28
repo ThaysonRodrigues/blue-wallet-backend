@@ -11,6 +11,8 @@ import com.blue.wallet.security.JwtTokenUtil;
 import com.blue.wallet.service.ReceitaService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -108,21 +110,20 @@ public class LancamentoReceitaController {
 
     @GetMapping(value = LancamentoReceitaURI.PESQUISAR_POR_DATA)
     @ApiOperation(value = "EndPoint para pesquisar receitas por data e usuário")
-    public ResponseEntity<?> pesquisarLancamentoReceitaPorData(@RequestHeader("Authorization") String token,
-                                                               @PathVariable String data) {
+    public ResponseEntity<Page<CadastroReceitaDTO>> pesquisarLancamentoReceitaPorData(Pageable pageable,
+                                                                                      @RequestHeader("Authorization") String token,
+                                                                                      @PathVariable String data) {
         String strToken = tokenUtil.cleanToken(token);
 
         String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-        List<LancamentoReceitaORM> lancamentoPorData = receitaService.pesquisarLancamentoPorDataAndUsuario(Integer
-                .parseInt(idUsuario), data);
+        Page<CadastroReceitaDTO> lancamentoPorData = receitaService.pesquisarLancamentoPorDataAndUsuario(Integer
+                .parseInt(idUsuario), data, pageable);
 
-        List<CadastroReceitaDTO> receitasDTO = mapper.toListCadastroReceitaDTO(lancamentoPorData);
-
-        if(receitasDTO.isEmpty()) {
+        if (lancamentoPorData.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(receitasDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(lancamentoPorData);
     }
 }
