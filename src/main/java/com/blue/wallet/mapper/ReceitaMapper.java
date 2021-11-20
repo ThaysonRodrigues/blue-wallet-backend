@@ -37,6 +37,7 @@ public class ReceitaMapper {
         cadastroReceita.setDataLancamento(receitaORM.getDataLancamento());
         cadastroReceita.setFlgPagamentoEfetuado(receitaORM.isFlgPagamentoEfetuado());
         cadastroReceita.setCategoriaReceita(receitaORM.getCategoriaReceita().getId());
+        cadastroReceita.setDescricaoCategoriaReceita(receitaORM.getCategoriaReceita().getDescricao());
 
         return cadastroReceita;
     }

@@ -18,8 +18,26 @@ public class ReceitaService {
     @Autowired
     private ReceitaMapper receitaMapper;
 
-    public LancamentoReceitaORM save(LancamentoReceitaORM lancamentoReceita) {
-        return repository.save(lancamentoReceita);
+    public void save(CadastroReceitaDTO receitaDTO, String idUsuario) {
+        int numParcelas = receitaDTO.getNumeroParcelas();
+
+        for (int cont = 0; cont < numParcelas; cont++) {
+            LancamentoReceitaORM lancamentoReceita = receitaMapper.toLancamentoReceitaORM(receitaDTO, idUsuario);
+            lancamentoReceita.setNumeroParcelas(cont + 1);
+
+            if (cont > 0) {
+                lancamentoReceita.setDataLancamento(lancamentoReceita.getDataLancamento().plusMonths(cont));
+                lancamentoReceita.setFlgPagamentoEfetuado(false);
+            }
+
+            repository.save(lancamentoReceita);
+        }
+    }
+
+    public void edit(CadastroReceitaDTO receitaDTO, String idUsuario) {
+        LancamentoReceitaORM lancamentoReceitaORM = receitaMapper.toLancamentoReceitaORM(receitaDTO, idUsuario);
+
+        repository.save(lancamentoReceitaORM);
     }
 
     public void deletarReceitaById(Integer receitaId) {

@@ -11,13 +11,14 @@ import com.blue.wallet.security.JwtTokenUtil;
 import com.blue.wallet.service.DespesaService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = LancamentoDespesaURI.CONTROLLER)
@@ -34,11 +35,9 @@ public class LancamentoDespesaController {
 
     @PostMapping(value = LancamentoDespesaURI.CADASTAR)
     @ApiOperation(value = "EndPoint para cadastrar uma nova despesa")
-    public ResponseEntity<?> lancarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
+    public ResponseEntity lancarDespesa(@Valid @RequestBody CadastroDespesaDTO request,
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
-
-        CadastroDespesaDTO despesaResponse = null;
 
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
@@ -51,14 +50,12 @@ public class LancamentoDespesaController {
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
-
-            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
+            despesaService.save(request, idUsuario);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
+        return  ResponseEntity.ok().build();
     }
 
     @PutMapping(value = LancamentoDespesaURI.EDITAR)
@@ -67,8 +64,6 @@ public class LancamentoDespesaController {
                                            @RequestHeader("Authorization") String token, BindingResult result) {
         Response response = new Response();
 
-        CadastroDespesaDTO despesaResponse = null;
-
         if(result.hasErrors()) {
             result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
 
@@ -80,14 +75,12 @@ public class LancamentoDespesaController {
 
             String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
 
-            LancamentoDespesaORM despesaORM = despesaService.save(mapper.toLancamentoDespesaORM(request, idUsuario));
-
-            despesaResponse = mapper.toCadastroDespesaDTO(despesaORM);
+           despesaService.edit(request, idUsuario);
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(despesaResponse);
+        return  ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = LancamentoDespesaURI.DELETAR)
@@ -104,21 +97,18 @@ public class LancamentoDespesaController {
 
     @GetMapping(value = LancamentoReceitaURI.PESQUISAR_POR_DATA)
     @ApiOperation(value = "EndPoint para pesquisar despesas por data e usuário")
-    public ResponseEntity<?> pesquisarLancamentoReceitaPorData(@RequestHeader("Authorization") String token,
-                                                               @PathVariable String data) {
-        String strToken = tokenUtil.cleanToken(token);
+    public ResponseEntity<Page<CadastroDespesaDTO>> pesquisarLancamentoReceitaPorData(Pageable pageable,
+                                                                                      @RequestHeader("Authorization") String token,
+                                                                                      @PathVariable String data) {
+        String idUsuario = tokenUtil.getIdUsuariofromToken(tokenUtil.cleanToken(token));
 
-        String idUsuario = tokenUtil.getIdUsuariofromToken(strToken);
+        Page<CadastroDespesaDTO> lancamentoPorData = despesaService.pesquisarLancamentoPorDataAndUsuario(Integer
+                .parseInt(idUsuario), data, pageable);
 
-        List<LancamentoDespesaORM> lancamentoPorData = despesaService.pesquisarLancamentoPorDataAndUsuario(Integer
-                .parseInt(idUsuario), data);
-
-        List<CadastroDespesaDTO> despesasDTO = mapper.toListCadastroDespesaDTO(lancamentoPorData);
-
-        if(despesasDTO.isEmpty()) {
+        if(lancamentoPorData.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(despesasDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(lancamentoPorData);
     }
 }
