@@ -5,7 +5,6 @@ import com.blue.wallet.controller.transport.request.CadastroDespesaDTO;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.LancamentoDespesaURI;
 import com.blue.wallet.controller.uri.LancamentoReceitaURI;
-import com.blue.wallet.domain.LancamentoDespesaORM;
 import com.blue.wallet.mapper.DespesaMapper;
 import com.blue.wallet.security.JwtTokenUtil;
 import com.blue.wallet.service.DespesaService;
