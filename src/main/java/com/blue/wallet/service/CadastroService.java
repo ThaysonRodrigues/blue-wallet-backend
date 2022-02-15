@@ -28,8 +28,8 @@ public class CadastroService {
         createUsuario(request);
     }
 
-    public boolean existeContaCadastrada(VerificarContaRequest request) {
-        Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
+    public boolean existeContaCadastrada(String email) {
+        Optional<UsuarioORM> usuario = repository.findByEmail(email);
 
         if(usuario.isPresent()) {
             return true;

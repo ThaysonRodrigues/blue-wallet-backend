@@ -30,14 +30,7 @@ public class DashboardService {
     public DashboardResponseDTO pesquisarInformacoesDashboard(Integer idUsuario, String data) {
         BigDecimal vlrReceitas = receitaRepository.calculaReceitaPorData(idUsuario, data);
         BigDecimal vlrDespesas = despesaRepository.calculaDespesaPorData(idUsuario, data);
-
-        if(vlrReceitas == null)
-            vlrReceitas = new BigDecimal(0);
-
-        if(vlrDespesas == null)
-            vlrDespesas = new BigDecimal(0);
-
-        BigDecimal vlrSaldo = vlrReceitas.subtract(vlrDespesas);
+        BigDecimal vlrSaldoAtual = dashboardEntityManager.getSaldoAtual(idUsuario);
 
         List<CategoriaDashboardVO> receitas = dashboardEntityManager
                 .getCalculoReceitaPorCategoria(idUsuario, data);
@@ -45,6 +38,6 @@ public class DashboardService {
         List<CategoriaDashboardVO> despesas = dashboardEntityManager
                 .getCalculoDespesaPorCategoria(idUsuario, data);
 
-        return dashboardMapper.toDashboardResponseDTO(vlrReceitas, vlrDespesas, vlrSaldo, receitas, despesas);
+        return dashboardMapper.toDashboardResponseDTO(vlrReceitas, vlrDespesas, vlrSaldoAtual, receitas, despesas);
     }
 }

@@ -6,7 +6,11 @@ import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.exceptions.ValidationBusinessException;
+import com.blue.wallet.mapper.CadastroMapper;
+import com.blue.wallet.security.dto.JwtRequest;
+import com.blue.wallet.security.dto.JwtResponse;
 import com.blue.wallet.service.CadastroService;
+import com.blue.wallet.service.JwtAuthenticationService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,12 @@ public class CadastroController {
 
     @Autowired
     private CadastroService service;
+
+    @Autowired
+    private CadastroMapper mapper;
+
+    @Autowired
+    private JwtAuthenticationService jwtService;
 
     @PostMapping(value = CadastroURI.CADASTAR)
     @ApiOperation(value = "EndPoint para cadastrar um novo usuário")
@@ -48,7 +58,7 @@ public class CadastroController {
 
     @PostMapping(value = CadastroURI.VERIFICAR)
     @ApiOperation(value = "EndPoint para verificar se email já está cadastrado")
-    public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaRequest request, BindingResult result) {
+    public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaRequest request, BindingResult result) throws Exception {
         Response response = new Response();
         boolean existeCadastro;
 
@@ -59,15 +69,17 @@ public class CadastroController {
         }
 
         try {
-            existeCadastro = service.existeContaCadastrada(request);
+            existeCadastro = service.existeContaCadastrada(request.getEmail());
         }  catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }
 
-        if(existeCadastro) {
-            return ResponseEntity.ok().build();
+        if(!existeCadastro) {
+            service.gravarNovaConta(mapper.toCadastroUsuarioRequest(request));
         }
 
-        return ResponseEntity.noContent().build();
+        JwtResponse token = jwtService.autentication(new JwtRequest(request.getEmail(), request.getIdGoogle()));
+
+        return ResponseEntity.ok().body(token);
     }
 }

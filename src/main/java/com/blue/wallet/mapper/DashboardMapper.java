@@ -20,22 +20,17 @@ public class DashboardMapper {
         dashboardResponse.setValorSaldoAtual(formatCurrency(vlrSaldo));
         dashboardResponse.setValorTotalDespesas(formatCurrency(vlrDespesas));
         dashboardResponse.setValorTotalReceitas(formatCurrency(vlrReceitas));
-        dashboardResponse.setReceitas(setValorMonetarioCategoria(receitas));
-        dashboardResponse.setDespesas(setValorMonetarioCategoria(despesas));
+        dashboardResponse.setReceitas(receitas);
+        dashboardResponse.setDespesas(despesas);
 
         return dashboardResponse;
     }
 
-    private List<CategoriaDashboardVO> setValorMonetarioCategoria(List<CategoriaDashboardVO> categorias) {
-        for(int c = 0; c < categorias.size(); c ++) {
-            categorias.get(c).setStrValor(formatCurrency(categorias.get(c).getValor()));
-        }
-
-        return categorias;
-    }
-
     private String formatCurrency(BigDecimal valor) {
         NumberFormat nf = NumberFormat.getInstance(new Locale("pt", "BR"));
+
+        if(valor == null)
+            return MOEDA_BRL + "0";
 
         String valorCategoria = nf.format(valor);
 
