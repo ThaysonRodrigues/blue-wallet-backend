@@ -16,4 +16,7 @@ public interface LancamentoDespesaRepository extends JpaRepository<LancamentoDes
 
     @Query("select sum(l.valor) from LancamentoDespesaORM l inner join l.usuario u where u.id = :idUsuario and to_char(l.dataPagamento, 'YYYY-MM') = :data")
     BigDecimal calculaDespesaPorData(@Param("idUsuario") Integer idUsuario, @Param("data") String data);
+
+    @Query("select sum(l.valor) from LancamentoDespesaORM l inner join l.usuario u where u.id = :idUsuario")
+    BigDecimal calculaValorDespesaTotal(@Param("idUsuario") Integer idUsuario);
 }

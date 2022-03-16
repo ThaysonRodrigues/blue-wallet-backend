@@ -30,7 +30,17 @@ public class DashboardService {
     public DashboardResponseDTO pesquisarInformacoesDashboard(Integer idUsuario, String data) {
         BigDecimal vlrReceitas = receitaRepository.calculaReceitaPorData(idUsuario, data);
         BigDecimal vlrDespesas = despesaRepository.calculaDespesaPorData(idUsuario, data);
-        BigDecimal vlrSaldoAtual = dashboardEntityManager.getSaldoAtual(idUsuario);
+
+        BigDecimal vlrReceitaTotal = receitaRepository.calculaValorReceitaTotal(idUsuario);
+        BigDecimal vlrDespesaTotal = despesaRepository.calculaValorDespesaTotal(idUsuario);
+
+        if (vlrReceitaTotal == null)
+            vlrReceitaTotal = BigDecimal.ZERO;
+
+        if (vlrDespesaTotal == null)
+            vlrDespesaTotal = BigDecimal.ZERO;
+
+        BigDecimal vlrSaldoAtual = vlrReceitaTotal.subtract(vlrDespesaTotal);
 
         List<CategoriaDashboardVO> receitas = dashboardEntityManager
                 .getCalculoReceitaPorCategoria(idUsuario, data);

@@ -4,9 +4,11 @@ import com.blue.wallet.controller.helper.ResponseBodyHelper;
 import com.blue.wallet.controller.transport.request.CadastroUsuarioRequest;
 import com.blue.wallet.controller.transport.request.VerificarContaRequest;
 import com.blue.wallet.controller.transport.response.Response;
+import com.blue.wallet.controller.transport.response.UserDTO;
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.exceptions.ValidationBusinessException;
 import com.blue.wallet.mapper.CadastroMapper;
+import com.blue.wallet.security.JwtTokenUtil;
 import com.blue.wallet.security.dto.JwtRequest;
 import com.blue.wallet.security.dto.JwtResponse;
 import com.blue.wallet.service.CadastroService;
@@ -33,6 +35,9 @@ public class CadastroController {
 
     @Autowired
     private JwtAuthenticationService jwtService;
+
+    @Autowired
+    private JwtTokenUtil tokenUtil;
 
     @PostMapping(value = CadastroURI.CADASTAR)
     @ApiOperation(value = "EndPoint para cadastrar um novo usuário")
@@ -81,5 +86,19 @@ public class CadastroController {
         JwtResponse token = jwtService.autentication(new JwtRequest(request.getEmail(), request.getIdGoogle()));
 
         return ResponseEntity.ok().body(token);
+    }
+
+    @GetMapping(value = CadastroURI.USER_NAME)
+    @ApiOperation(value = "EndPoint para retornar dados do cliente")
+    public ResponseEntity<?> getUsername(@RequestHeader("Authorization") String token) {
+        try {
+            String idUsuario = tokenUtil.getIdUsuariofromToken(tokenUtil.cleanToken(token));
+
+            UserDTO response = service.getUsername(Integer.parseInt(idUsuario));
+
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            return ResponseBodyHelper.internalServerError(e.getMessage());
+        }
     }
 }

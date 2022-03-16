@@ -17,4 +17,7 @@ public interface LancamentoReceitaRepository extends JpaRepository<LancamentoRec
 
     @Query("select sum(l.valor) from LancamentoReceitaORM l inner join l.usuario u where u.id = :idUsuario and to_char(l.dataLancamento, 'YYYY-MM') = :data")
     BigDecimal calculaReceitaPorData(@Param("idUsuario") Integer idUsuario, @Param("data") String data);
+
+    @Query("select sum(l.valor) from LancamentoReceitaORM l inner join l.usuario u where u.id = :idUsuario")
+    BigDecimal calculaValorReceitaTotal(@Param("idUsuario") Integer idUsuario);
 }
