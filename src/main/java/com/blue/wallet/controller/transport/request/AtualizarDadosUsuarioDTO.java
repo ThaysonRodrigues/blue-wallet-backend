@@ -1,12 +1,18 @@
-package com.blue.wallet.controller.transport.response;
+package com.blue.wallet.controller.transport.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class UserDTO {
+public class AtualizarDadosUsuarioDTO {
 
+    @NotBlank(message = "O campo 'nome' não pode ser nulo ou branco.")
     private String nome;
+
+    @NotBlank(message = "O campo 'celular' não pode ser nulo ou branco.")
     private String celular;
-    private String email;
+
+    @NotNull(message = "O campo 'dataNascimento' não pode ser nulo ou branco.")
     private LocalDate dataNascimento;
 
     public String getNome() {
@@ -23,14 +29,6 @@ public class UserDTO {
 
     public void setCelular(String celular) {
         this.celular = celular;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public LocalDate getDataNascimento() {

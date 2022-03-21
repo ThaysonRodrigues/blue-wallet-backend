@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CadastroUsuarioRequest implements Serializable {
+public class CadastroUsuarioDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

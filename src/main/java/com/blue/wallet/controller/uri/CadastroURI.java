@@ -5,7 +5,8 @@ public final class CadastroURI {
     public static final String CONTROLLER = "/api/conta";
     public static final String CADASTAR = "/cadastrar";
     public static final String VERIFICAR = "/verificar";
-    public static final String USER_NAME = "/user-name";
+    public static final String DADOS_CADASTRAIS = "/dados-cadastrais";
+    public static final String ATUALIZAR_DADOS_CADASTRAIS = "/atualizar-dados-cadastrais";
 
     private static final String URI_CADASTRAR_USUARIO = CONTROLLER + CADASTAR;
     private static final String URI_VERIFICAR_USUARIO = CONTROLLER + VERIFICAR;

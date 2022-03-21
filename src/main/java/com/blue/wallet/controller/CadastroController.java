@@ -1,8 +1,9 @@
 package com.blue.wallet.controller;
 
 import com.blue.wallet.controller.helper.ResponseBodyHelper;
-import com.blue.wallet.controller.transport.request.CadastroUsuarioRequest;
-import com.blue.wallet.controller.transport.request.VerificarContaRequest;
+import com.blue.wallet.controller.transport.request.AtualizarDadosUsuarioDTO;
+import com.blue.wallet.controller.transport.request.CadastroUsuarioDTO;
+import com.blue.wallet.controller.transport.request.VerificarContaDTO;
 import com.blue.wallet.controller.transport.response.Response;
 import com.blue.wallet.controller.transport.response.UserDTO;
 import com.blue.wallet.controller.uri.CadastroURI;
@@ -41,7 +42,7 @@ public class CadastroController {
 
     @PostMapping(value = CadastroURI.CADASTAR)
     @ApiOperation(value = "EndPoint para cadastrar um novo usuário")
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest request, BindingResult result) {
+    public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid CadastroUsuarioDTO request, BindingResult result) {
         Response response = new Response();
 
         if(result.hasErrors()) {
@@ -63,7 +64,7 @@ public class CadastroController {
 
     @PostMapping(value = CadastroURI.VERIFICAR)
     @ApiOperation(value = "EndPoint para verificar se email já está cadastrado")
-    public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaRequest request, BindingResult result) throws Exception {
+    public ResponseEntity<?> verificaSeExisteConta(@RequestBody @Valid VerificarContaDTO request, BindingResult result) throws Exception {
         Response response = new Response();
         boolean existeCadastro;
 
@@ -88,15 +89,38 @@ public class CadastroController {
         return ResponseEntity.ok().body(token);
     }
 
-    @GetMapping(value = CadastroURI.USER_NAME)
-    @ApiOperation(value = "EndPoint para retornar dados do cliente")
-    public ResponseEntity<?> getUsername(@RequestHeader("Authorization") String token) {
+    @GetMapping(value = CadastroURI.DADOS_CADASTRAIS)
+    @ApiOperation(value = "EndPoint para retornar dados cadastrais do cliente")
+    public ResponseEntity<?> getDadosCadastrais(@RequestHeader("Authorization") String token) {
         try {
             String idUsuario = tokenUtil.getIdUsuariofromToken(tokenUtil.cleanToken(token));
 
-            UserDTO response = service.getUsername(Integer.parseInt(idUsuario));
+            UserDTO response = service.getDadosCadastrais(Integer.parseInt(idUsuario));
 
             return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            return ResponseBodyHelper.internalServerError(e.getMessage());
+        }
+    }
+
+    @PutMapping(value = CadastroURI.ATUALIZAR_DADOS_CADASTRAIS)
+    @ApiOperation(value = "EndPoint para atualização dos dados cadastrais")
+    public ResponseEntity<?> atualizaDadosCadastrais(@RequestBody @Valid AtualizarDadosUsuarioDTO request, BindingResult result,
+                                                     @RequestHeader("Authorization") String token) {
+        Response response = new Response();
+
+        if(result.hasErrors()) {
+            result.getAllErrors().forEach(e -> response.getErrors().add(e.getDefaultMessage()));
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        try {
+            String idUsuario = tokenUtil.getIdUsuariofromToken(tokenUtil.cleanToken(token));
+
+            service.atualidarDadosUsuario(request, Integer.parseInt(idUsuario));
+
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }

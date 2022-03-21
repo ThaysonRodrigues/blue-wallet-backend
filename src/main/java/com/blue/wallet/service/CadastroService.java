@@ -1,16 +1,16 @@
 package com.blue.wallet.service;
 
-import com.blue.wallet.controller.transport.request.CadastroUsuarioRequest;
-import com.blue.wallet.controller.transport.request.VerificarContaRequest;
+import com.blue.wallet.controller.transport.request.AtualizarDadosUsuarioDTO;
+import com.blue.wallet.controller.transport.request.CadastroUsuarioDTO;
 import com.blue.wallet.controller.transport.response.UserDTO;
 import com.blue.wallet.domain.UsuarioORM;
 import com.blue.wallet.exceptions.ValidationBusinessException;
+import com.blue.wallet.mapper.CadastroMapper;
 import com.blue.wallet.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -19,14 +19,20 @@ public class CadastroService {
     @Autowired
     private UsuarioRepository repository;
 
-    public void gravarNovaConta(CadastroUsuarioRequest request) throws ValidationBusinessException {
+    public void gravarNovaConta(CadastroUsuarioDTO request) throws ValidationBusinessException {
         Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
 
         if(usuario.isPresent()) {
             throw new ValidationBusinessException("Email já cadastrado no sistema!");
         }
 
-        createUsuario(request);
+        repository.save(CadastroMapper.toUsuarioORM(request));
+    }
+
+    @Transactional
+    public void atualidarDadosUsuario(AtualizarDadosUsuarioDTO dadosUsuario, Integer idUsuario) {
+        repository.atualizarDadosCadastrais(dadosUsuario.getNome(), dadosUsuario.getCelular(), dadosUsuario
+                .getDataNascimento(), idUsuario);
     }
 
     public boolean existeContaCadastrada(String email) {
@@ -39,21 +45,15 @@ public class CadastroService {
         return false;
     }
 
-    public UserDTO getUsername(Integer idUsuario) {
-       return new UserDTO(repository.getUsername(idUsuario).trim());
-    }
+    public UserDTO getDadosCadastrais(Integer idUsuario) {
+        UsuarioORM usuarioORM = repository.getUser(idUsuario);
 
-    private void createUsuario(CadastroUsuarioRequest request) {
-        UsuarioORM usuario = new UsuarioORM();
+        UserDTO user = new UserDTO();
+        user.setNome(usuarioORM.getNome().trim());
+        user.setCelular(usuarioORM.getCelular());
+        user.setEmail(usuarioORM.getEmail());
+        user.setDataNascimento(usuarioORM.getDataNascimento());
 
-        usuario.setNome(request.getNome());
-        usuario.setEmail(request.getEmail());
-        usuario.setCelular(request.getCelular());
-        usuario.setDataNascimento(request.getDataNascimento());
-        usuario.setDataCadastro(LocalDate.now());
-        usuario.setSenha(new BCryptPasswordEncoder().encode(request.getSenha()));
-        usuario.setGoogleCode(request.getGoogleCode());
-
-        repository.save(usuario);
+        return user;
     }
 }
