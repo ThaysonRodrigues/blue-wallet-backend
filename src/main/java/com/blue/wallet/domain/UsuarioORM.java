@@ -1,5 +1,7 @@
 package com.blue.wallet.domain;
 
+import org.apache.tomcat.jni.Local;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -37,6 +39,12 @@ public class UsuarioORM {
 
     @Column(name = "GOOGLE_CODE")
     private String googleCode;
+
+    @Column(name = "CODIGO_ALTERACAO_SENHA")
+    private Integer codigoAlteracaoSenha;
+
+    @Column(name = "DATA_SOLICITACAO_ALTERAR_SENHA")
+    private LocalDate dataSolicitacaoAlterarSenha;
 
     /*************************************************
      ** RELATIONSHIPS
@@ -126,5 +134,21 @@ public class UsuarioORM {
 
     public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public Integer getCodigoAlteracaoSenha() {
+        return codigoAlteracaoSenha;
+    }
+
+    public void setCodigoAlteracaoSenha(Integer codigoAlteracaoSenha) {
+        this.codigoAlteracaoSenha = codigoAlteracaoSenha;
+    }
+
+    public LocalDate getDataSolicitacaoAlterarSenha() {
+        return dataSolicitacaoAlterarSenha;
+    }
+
+    public void setDataSolicitacaoAlterarSenha(LocalDate dataSolicitacaoAlterarSenha) {
+        this.dataSolicitacaoAlterarSenha = dataSolicitacaoAlterarSenha;
     }
 }

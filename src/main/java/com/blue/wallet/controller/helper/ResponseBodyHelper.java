@@ -8,6 +8,12 @@ public class ResponseBodyHelper {
 
     private ResponseBodyHelper() {}
 
+    public static final ResponseEntity<?> notFound(String message) {
+        ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(HttpStatus.NOT_FOUND);
+        WebServiceErrorResponse error = new WebServiceErrorResponse(message);
+        return bodyBuilder.body(error);
+    }
+
     public static final ResponseEntity<?> badRequest(String message) {
         ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
         WebServiceErrorResponse error = new WebServiceErrorResponse(message);
