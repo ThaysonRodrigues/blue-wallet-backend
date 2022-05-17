@@ -21,9 +21,6 @@ public class CadastroService {
     @Autowired
     private UsuarioRepository repository;
 
-    @Autowired
-    private EmailService emailService;
-
     public void gravarNovaConta(CadastroUsuarioDTO request) throws ValidationBusinessException {
         Optional<UsuarioORM> usuario = repository.findByEmail(request.getEmail());
 
@@ -32,23 +29,6 @@ public class CadastroService {
         }
 
         repository.save(CadastroMapper.toUsuarioORM(request));
-    }
-
-    public void recuperarSenha(String email) throws ValidationBusinessException {
-        Optional<UsuarioORM> usuario = repository.findByEmail(email);
-
-        if(!usuario.isPresent()) {
-            throw new ValidationBusinessException("E-mail informado não encontrado");
-        }
-
-        Integer codigoVerificacaoEmail = gerarCodigoVerificacaoEmail();
-
-        usuario.get().setCodigoAlteracaoSenha(codigoVerificacaoEmail);
-        usuario.get().setDataSolicitacaoAlterarSenha(LocalDate.now());
-
-        repository.save(usuario.get());
-
-        emailService.sendEmailRecuperarSenha(usuario.get(), codigoVerificacaoEmail);
     }
 
     @Transactional
@@ -76,10 +56,5 @@ public class CadastroService {
         user.setDataNascimento(usuarioORM.getDataNascimento());
 
         return user;
-    }
-
-    private Integer gerarCodigoVerificacaoEmail() {
-        Random r = new Random();
-        return r.nextInt(9999) + 0001;
     }
 }

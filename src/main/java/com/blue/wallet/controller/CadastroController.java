@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "https://localhost:4200")
 @RequestMapping(value = CadastroURI.CONTROLLER)
 public class CadastroController {
 
@@ -55,20 +54,6 @@ public class CadastroController {
             service.gravarNovaConta(request);
         } catch (ValidationBusinessException e) {
             return ResponseBodyHelper.badRequest(e.getMessage());
-        } catch (Exception e) {
-            return ResponseBodyHelper.internalServerError(e.getMessage());
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(value = CadastroURI.RECUPERAR_SENHA)
-    @ApiOperation(value = "EndPoint para recuperação de senha")
-    public ResponseEntity<?> recuperarSenha(@PathVariable String email) {
-        try {
-            service.recuperarSenha(email);
-        } catch (ValidationBusinessException e) {
-            return ResponseBodyHelper.notFound(e.getMessage());
         } catch (Exception e) {
             return ResponseBodyHelper.internalServerError(e.getMessage());
         }

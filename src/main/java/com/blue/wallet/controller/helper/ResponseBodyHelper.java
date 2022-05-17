@@ -14,6 +14,12 @@ public class ResponseBodyHelper {
         return bodyBuilder.body(error);
     }
 
+    public static final ResponseEntity<?> unprocessableEntity(String message) {
+        ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY);
+        WebServiceErrorResponse error = new WebServiceErrorResponse(message);
+        return bodyBuilder.body(error);
+    }
+
     public static final ResponseEntity<?> badRequest(String message) {
         ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
         WebServiceErrorResponse error = new WebServiceErrorResponse(message);

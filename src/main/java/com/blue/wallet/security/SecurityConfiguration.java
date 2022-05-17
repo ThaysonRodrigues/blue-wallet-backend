@@ -2,6 +2,7 @@ package com.blue.wallet.security;
 
 import com.blue.wallet.controller.uri.CadastroURI;
 import com.blue.wallet.controller.uri.JwtAuthenticationURI;
+import com.blue.wallet.controller.uri.RecuperarSenhaURI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +62,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, CadastroURI.PUBLIC_HTTP_POST_REQUESTS).permitAll()
+                .antMatchers(HttpMethod.POST, RecuperarSenhaURI.PUBLIC_HTTP_POST_REQUESTS).permitAll()
+                .antMatchers(HttpMethod.GET, RecuperarSenhaURI.PUBLIC_HTTP_GET_REQUESTS).permitAll()
                 .antMatchers(HttpMethod.POST, JwtAuthenticationURI.CONTROLLER).permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

@@ -13,6 +13,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioORM, Integer> {
 
     Optional<UsuarioORM> findByEmail(String email);
 
+    Optional<UsuarioORM> findByEmailAndCodigoAlteracaoSenha(String email, Integer codigo);
+
     @Query("SELECT u FROM UsuarioORM u where u.id = :idUsuario")
     UsuarioORM getUser(@Param("idUsuario") Integer idIsuario);
 
